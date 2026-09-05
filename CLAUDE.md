@@ -13,7 +13,7 @@ Rails + Aurora MySQL のアプリで、物件検索のパフォーマンスを O
 - @docs/local-environment.md — ローカル検証環境の構成
 - @docs/verification-plan.md — 検証シナリオと合格基準
 - @docs/decisions.md — なぜこの構成にしたかの決定記録
-- @TASKS.md — 実装タスクの分解
+- @docs/results.md — 検証結果と最終的な結論
 
 ## 技術スタック
 
@@ -42,6 +42,7 @@ Rails + Aurora MySQL のアプリで、物件検索のパフォーマンスを O
 
 ## Git 運用
 
-- リモートは **GitHub のプライベートリポジトリ**。まだ作成していない場合は @TASKS.md の Task 0 を先に実施する
+- リモートは GitHub の `property-search-lab` リポジトリ。既存の public リポジトリを流用しており、
+  ユーザー承認のもと例外的に public のまま運用している(本来は private が原則)
 - 検証の性質上コミットは細かくてよいが、1コミット1話題にする
 - LocalStack の auth token や AWS の認証情報を絶対にコミットしない。`.env` は必ず `.gitignore` に入れる
