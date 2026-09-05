@@ -16,8 +16,12 @@ curl -XPOST "$OS_ENDPOINT/properties_search/_analyze" \
 **合格基準**
 
 - 「王子神谷」「レジデンス」が意図した粒度で分割される
-- 表記ゆれ(全角/半角、カタカナ長音)が正規化される
 - `dynamic: strict` により、未定義フィールドを含むドキュメントの投入が拒否される
+
+**ローカルでは検証しない**: 表記ゆれ(全角/半角、カタカナ長音)の正規化は `icu_normalizer`
+(analysis-icu プラグイン)が必要だが、LocalStack の OpenSearch には同梱されていない。
+@docs/decisions.md の D10 を参照。本番導入時に AWS OpenSearch Service で
+Analysis-ICU パッケージを追加して確認する。
 
 ## V2. 検索クエリが表現しきれるか
 

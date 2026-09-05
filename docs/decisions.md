@@ -134,3 +134,25 @@ Ultimate 限定機能(D4)とは別種の制約。
 対応: 無料アカウントで発行した token を `.env` の `LOCALSTACK_AUTH_TOKEN` に設定し、
 `docker-compose.yml` から渡す。`.env` は元々 `.gitignore` 対象(@CLAUDE.md)なので
 運用上の変更はない。
+
+---
+
+## D10. `ja_text` アナライザーから `icu_normalizer` を外す
+
+**採用(2026-09)。**
+
+@reference/index-mapping.json の `ja_text` カスタムアナライザーは元々
+`icu_normalizer`(全角/半角、カタカナ長音などの表記ゆれ正規化)を char_filter に
+含んでいたが、LocalStack の OpenSearch には `analysis-icu` プラグインが同梱されておらず
+(`_cat/plugins` で確認済み。kuromoji は同梱されているが icu は別プラグイン)、
+インデックス作成が `illegal_argument_exception` で失敗した。
+
+却下した案: カスタム Docker イメージで `analysis-icu` を追加インストールする。
+検証の本筋(マッピング設計・Query DSL・非正規化ロジック・イベントパース)から外れ、
+1コンテナで完結する構成の単純さが損なわれる。
+
+対応として `icu_normalizer` を char_filter から削除した。この結果、
+@docs/verification-plan.md の V1 のうち「表記ゆれ(全角/半角、カタカナ長音)の正規化」は
+ローカルでは検証できない。本番導入時は AWS OpenSearch Service に
+Analysis-ICU パッケージを関連付けることで同等の機能を追加できるため、
+機能自体を諦めたわけではなく、ローカル検証環境の制約として扱う。

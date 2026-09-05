@@ -58,13 +58,13 @@
 
 ## Task 3: OpenSearch ドメインとインデックス
 
-- [ ] `scripts/create-domain.sh` — LocalStack に OpenSearch ドメインを作成し、
+- [x] `scripts/create-domain.sh` — LocalStack に OpenSearch ドメインを作成し、
       払い出されたエンドポイントを `.env` に書き出す
-- [ ] `scripts/create-index.sh <version>` — @reference/index-mapping.json でインデックスを作成し、
+- [x] `scripts/create-index.sh <version>` — @reference/index-mapping.json でインデックスを作成し、
       エイリアス `properties_search` を原子的に張り替える
-- [ ] kuromoji が利用可能なことを `_analyze` API で確認する
+- [x] kuromoji が利用可能なことを `_analyze` API で確認する
 
-**確認**: @docs/verification-plan.md の V1 が通る
+**確認**: @docs/verification-plan.md の V1 が通る(icu_normalizer 部分は対象外。D10 参照) — 確認済み
 
 ---
 

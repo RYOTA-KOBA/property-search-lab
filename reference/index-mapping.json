@@ -7,7 +7,6 @@
         "ja_text": {
           "type": "custom",
           "tokenizer": "kuromoji_tokenizer",
-          "char_filter": ["icu_normalizer"],
           "filter": [
             "kuromoji_baseform",
             "kuromoji_part_of_speech",
