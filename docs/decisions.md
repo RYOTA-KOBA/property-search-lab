@@ -156,3 +156,48 @@ Ultimate 限定機能(D4)とは別種の制約。
 ローカルでは検証できない。本番導入時は AWS OpenSearch Service に
 Analysis-ICU パッケージを関連付けることで同等の機能を追加できるため、
 機能自体を諦めたわけではなく、ローカル検証環境の制約として扱う。
+
+---
+
+## D11. LocalStack の OpenSearch ドメインは永続化しない前提で運用する
+
+**採用(2026-09)。**
+
+`_localstack/health` の `features.persistence` が `disabled` になっており、
+`docker compose down` や `localstack` コンテナの再作成(設定変更による recreate 含む)で
+OpenSearch ドメインの中身が消える(MySQL 側は別コンテナ・別ボリュームなので影響を受けない)。
+
+永続化には Pro 版の機能が絡む可能性があり、深追いしない。
+その代わり `create-domain.sh` → `create-index.sh` → `full-reindex.sh` を
+再実行すれば数秒で元の状態に戻せるよう、各スクリプトを冪等に近い形(既存インデックス削除は
+別コマンド、エイリアス張り替えは何度実行しても安全)に保っている。
+LocalStack を再起動したら、まずこの3コマンドを流し直すことを前提とする。
+
+---
+
+## D12. Lambda の mysql2 は Lambda 実行環境イメージ内でビルドし、libmysqlclient を同梱する
+
+**採用(2026-09)。**
+
+`mysql2` はネイティブ拡張(C コンパイル済みバイナリ)の gem で、Linux 向けの
+precompiled gem は rubygems 上に存在しない(Windows 向けのみ)。macOS でビルドした
+gem は Lambda(Linux/aarch64)では動かないため、`public.ecr.aws/lambda/ruby:3.2`
+(LocalStack が実行時に使うのと同じベースイメージ)の中で `bundle install` してビルドする。
+
+このイメージには gcc/make/mysql ヘッダが入っておらず、`mariadb-devel` を yum で入れようとすると
+Amazon 独自の `openssl-snapsafe-libs` パッケージと `openssl-libs` が Conflicts 指定されていて
+インストールできない。`yumdownloader` で RPM 本体だけ取得し、`rpm -Uvh --force --nodeps` で
+依存関係チェックと衝突チェックを無視して強制インストールすることで回避した
+(この操作はビルド用の使い捨てコンテナ内だけで完結し、実行環境やホストには影響しない)。
+
+ビルドした `mysql2.so` は `libmysqlclient.so.18` に動的リンクするが、この共有ライブラリは
+Lambda の実行環境イメージにプリインストールされていない(ビルドに使った他の依存ライブラリは
+ベースイメージに標準で入っている)。そのため `libmysqlclient.so.18` だけを zip に同梱し、
+`LD_LIBRARY_PATH=/var/task/vendor/native` を Lambda の環境変数に設定して読み込ませる
+(deploy-lambda.sh 参照)。
+
+**副次的に踏んだ問題**: MySQL 8.0 のデフォルト認証方式 `caching_sha2_password` に、
+Amazon Linux 2 の古い mariadb クライアントライブラリ(5.5系)が対応しておらず、
+Lambda からの接続が `Authentication plugin 'caching_sha2_password' cannot be loaded` で
+失敗した。`mysql/conf.d/binlog.cnf` に `default_authentication_plugin = mysql_native_password`
+を追加して解決した。

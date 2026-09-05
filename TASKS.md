@@ -110,16 +110,17 @@
 
 ## Task 7: Lambda の実装とデプロイ
 
-- [ ] `lambda/handler.rb` — Kinesis イベントを受け取り、
+- [x] `lambda/handler.rb` — Kinesis イベントを受け取り、
       DMS のエンベロープをパースして対象 property_id を割り出し、
       `build_document` で非正規化して OpenSearch に upsert する
       - `properties` テーブルのイベントは `data.id`、子テーブルのイベントは `data.property_id` を見る
       - `operation` が `delete`、または `published` が false のときはドキュメントを削除する
       - `record-type` が `control` のイベントは無視する
-- [ ] `scripts/deploy-lambda.sh` — zip 化して LocalStack に関数を作成し、
+- [x] `scripts/deploy-lambda.sh` — zip 化して LocalStack に関数を作成し、
       Kinesis のイベントソースマッピングを設定する
 
-**確認**: @docs/verification-plan.md の V3 / V4 / V5 が通る
+**確認**: @docs/verification-plan.md の V3 / V4 / V5 が通る — 実際に LocalStack Lambda に
+デプロイし、Kinesis 経由で E2E 確認済み(D12 参照)
 
 ---
 

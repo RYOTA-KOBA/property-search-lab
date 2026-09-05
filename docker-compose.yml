@@ -4,14 +4,20 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=opensearch,kinesis,lambda,secretsmanager
+      # logs は Lambda の CloudWatch Logs 出力を見るために有効にしている(課金対象ではない)
+      - SERVICES=opensearch,kinesis,lambda,secretsmanager,logs
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-ap-northeast-1}
       # 2026-03 の Community/Pro イメージ統合以降、無料アカウントの token がないと起動しない
       - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
+      # Lambda(Docker executor)のコンテナを MySQL と同じネットワークに繋ぎ、
+      # サービス名 "mysql" で名前解決できるようにする
+      - LAMBDA_DOCKER_NETWORK=property-search-lab_default
     volumes:
       - localstack-data:/var/lib/localstack
+      # LocalStack が Lambda 実行用コンテナを兄弟コンテナとして起動するために必要
+      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
       interval: 10s

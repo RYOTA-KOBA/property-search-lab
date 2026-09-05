@@ -6,3 +6,8 @@ server-id        = 1
 log_bin           = mysql-bin
 binlog_format     = ROW
 binlog_row_image  = FULL
+
+# Lambda 側の mysql2 gem(Amazon Linux 2 の古い mariadb クライアントライブラリでビルド)が
+# MySQL 8.0 のデフォルト認証方式 caching_sha2_password に対応していないため、
+# 初期作成時点から従来方式にしておく(初回起動時のユーザー作成にのみ効く設定)
+default_authentication_plugin = mysql_native_password
