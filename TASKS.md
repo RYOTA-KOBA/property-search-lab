@@ -50,9 +50,9 @@
 
 ## Task 2: MySQL スキーマとシードデータ
 
-- [ ] `mysql/init/01_schema.sql` を作成する。スキーマは @reference/schema.sql をそのまま使う
-- [ ] `scripts/setup-mysql.sh` を作成する(初期化 + シード投入)
-- [ ] シードデータは非正規化の検証ができるよう、1物件に複数の画像と複数の駅を持たせる
+- [x] `mysql/init/01_schema.sql` を作成する。スキーマは @reference/schema.sql をそのまま使う
+- [x] `scripts/setup-mysql.sh` を作成する(初期化 + シード投入)
+- [x] シードデータは非正規化の検証ができるよう、1物件に複数の画像と複数の駅を持たせる — 確認済み(物件1: 画像2件/駅2件)
 
 ---
 
