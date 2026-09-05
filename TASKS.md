@@ -70,14 +70,18 @@
 
 ## Task 4: 非正規化ロジックとフルリインデックス
 
-- [ ] `lib/document_builder.rb` — `build_document(property_id)` を実装する。
+- [x] `lib/document_builder.rb` — `build_document(mysql, property_id)` を実装する。
       MySQL から properties / property_images / property_stations を引いて
       1つの検索ドキュメントに組み立てる
       - **この関数が本番の Lambda にそのまま移植できる中核部分**。他の関心事を混ぜないこと
-- [ ] `scripts/full-reindex.rb` — 全件を bulk API で投入する。`[index_name]` を引数で受ける
-- [ ] `scripts/full-reindex.sh` — 上記のラッパー
+- [x] `scripts/full-reindex.rb` — 全件を bulk API で投入する。`[index_name]` を引数で受ける
+- [x] `scripts/full-reindex.sh` — 上記のラッパー
 
-**確認**: 全件投入後、ドキュメント数がシードデータの公開物件数と一致する
+**確認**: 全件投入後、ドキュメント数がシードデータの公開物件数と一致する — 確認済み(3件)
+
+**追記(2026-09-06)**: `setup-mysql.sh` が mysql クライアントの接続文字セット(既定 latin1)を
+指定しておらず日本語が文字化けして保存される不具合があった。`--default-character-set=utf8mb4`
+を指定して修正
 
 ---
 

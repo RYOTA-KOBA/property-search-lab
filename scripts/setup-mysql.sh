@@ -13,6 +13,9 @@ until docker compose exec -T mysql mysqladmin ping -h localhost -uroot -p"$MYSQL
 done
 
 echo "スキーマとシードデータを投入します..."
-docker compose exec -T mysql mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < mysql/init/01_schema.sql
+# mysql クライアントの接続文字セットは既定で latin1 になり、
+# 日本語データが文字化けするため utf8mb4 を明示する
+docker compose exec -T mysql mysql --default-character-set=utf8mb4 \
+  -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < mysql/init/01_schema.sql
 
 echo "完了"
