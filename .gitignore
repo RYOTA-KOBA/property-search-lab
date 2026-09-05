@@ -1,0 +1,5 @@
+.env
+*.log
+tmp/
+vendor/bundle/
+**/lambda.zip

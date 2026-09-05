@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "analyzer": {
+        "ja_text": {
+          "type": "custom",
+          "tokenizer": "kuromoji_tokenizer",
+          "char_filter": ["icu_normalizer"],
+          "filter": [
+            "kuromoji_baseform",
+            "kuromoji_part_of_speech",
+            "ja_stop",
+            "kuromoji_number",
+            "kuromoji_stemmer"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "id":         { "type": "long" },
+      "name":       { "type": "text", "analyzer": "ja_text" },
+      "address":    { "type": "text", "analyzer": "ja_text" },
+      "price":      { "type": "integer" },
+      "layout":     { "type": "keyword" },
+      "area_m2":    { "type": "float" },
+      "published":  { "type": "boolean" },
+      "location":   { "type": "geo_point" },
+
+      "min_walk_minutes": { "type": "integer" },
+      "station_names":    { "type": "keyword" },
+
+      "stations": {
+        "type": "nested",
+        "properties": {
+          "station_name": { "type": "keyword" },
+          "line_name":    { "type": "keyword" },
+          "walk_minutes": { "type": "integer" }
+        }
+      },
+
+      "image_urls":       { "type": "keyword", "index": false },
+      "thumbnail_url":    { "type": "keyword", "index": false },
+
+      "created_at": { "type": "date" },
+      "updated_at": { "type": "date" },
+      "indexed_at": { "type": "date" }
+    }
+  }
+}
