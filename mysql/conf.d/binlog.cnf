@@ -1,0 +1,8 @@
+# Aurora の DB クラスターパラメータグループで設定する項目をローカル MySQL で再現する。
+# binlog_format / binlog_row_image は DMS (CDC) の前提条件であり、
+# 本番の Aurora パラメータグループでも同じ値を設定する必要がある。
+[mysqld]
+server-id        = 1
+log_bin           = mysql-bin
+binlog_format     = ROW
+binlog_row_image  = FULL

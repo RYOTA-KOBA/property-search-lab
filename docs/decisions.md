@@ -114,3 +114,23 @@ OpenSearch のマッピングは作成後に変更できない項目が多い。
 
 検証の本筋ではなく、セットアップの複雑さが増すだけ。AWS CLI を叩くシェルスクリプトで済ませる。
 本番構築時に改めて IaC 化する。
+
+---
+
+## D9. LocalStack の無料アカウント auth token を `.env` で使う
+
+**採用(2026-09)。**
+
+2026-03 の Community/Pro イメージ統合以降、`localstack/localstack` イメージは
+`LOCALSTACK_AUTH_TOKEN` が環境変数にないと起動時にライセンス確認で落ちるようになった
+(exit code 55, "License activation failed")。一時的な回避策として
+`LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT=1` があったが 2026-04 に失効している。
+
+**これは有料機能の利用ではない。** app.localstack.cloud で無料登録すれば取得できる
+account-based token であり、opensearch / kinesis / lambda / secretsmanager は
+引き続き無料範囲(`_localstack/health` で `available`)で動く。DMS のような
+Ultimate 限定機能(D4)とは別種の制約。
+
+対応: 無料アカウントで発行した token を `.env` の `LOCALSTACK_AUTH_TOKEN` に設定し、
+`docker-compose.yml` から渡す。`.env` は元々 `.gitignore` 対象(@CLAUDE.md)なので
+運用上の変更はない。

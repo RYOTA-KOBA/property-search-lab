@@ -9,16 +9,17 @@
 
 **このタスクを最初に完了させる。** 以降の作業はすべてこのリポジトリ上で行う。
 
-- [ ] `gh` CLI が使えるか確認する(`gh auth status`)
-- [ ] **プライベートリポジトリ**として `property-search-lab` を作成する
-      (`gh repo create property-search-lab --private --source=. --remote=origin`)
-- [ ] `.gitignore` を作成する。最低限以下を含める
+- [x] `gh` CLI が使えるか確認する(`gh auth status`)
+- [x] `property-search-lab` リポジトリを使う
+      (既に GitHub 上に存在していたため作成はスキップ。**public のままで進める運用とすることをユーザーが承認済み**。
+      理由: リポジトリ名は既存のものを流用し、内容自体に機密情報がないため)
+- [x] `.gitignore` を作成する。最低限以下を含める
       - `.env`
       - `*.log`
       - `tmp/`
       - `vendor/bundle/`
       - `**/lambda.zip`
-- [ ] 現在のドキュメント一式を初回コミットして push する
+- [x] 現在のドキュメント一式を初回コミットして push する
 
 **注意**
 
@@ -30,16 +31,20 @@
 
 ## Task 1: ローカル環境の起動
 
-- [ ] `docker-compose.yml` を作成する
-      - LocalStack Community(`localstack/localstack`)、`SERVICES=opensearch,kinesis,lambda,secretsmanager`
+- [x] `docker-compose.yml` を作成する
+      - LocalStack(`localstack/localstack`)、`SERVICES=opensearch,kinesis,lambda,secretsmanager`
       - MySQL 8.0(binlog 設定は `mysql/conf.d/binlog.cnf` で与える)
-- [ ] `mysql/conf.d/binlog.cnf` を作成する
+- [x] `mysql/conf.d/binlog.cnf` を作成する
       - `binlog_format=ROW`, `binlog_row_image=FULL`, `server-id`, `log_bin`
       - 本番の Aurora パラメータグループと対応する旨をコメントで書く
-- [ ] `.env.example` を作成する
-- [ ] `docker compose up -d` で両方が healthy になることを確認する
+- [x] `.env.example` を作成する
+- [x] `docker compose up -d` で両方が healthy になることを確認する
 
-**確認**: `curl http://localhost:4566/_localstack/health` で opensearch / kinesis / lambda が `available`
+**確認**: `curl http://localhost:4566/_localstack/health` で opensearch / kinesis / lambda が `available` — 確認済み
+
+**追記(2026-09-06)**: LocalStack は 2026-03 の Community/Pro イメージ統合以降、
+無料アカウントの `LOCALSTACK_AUTH_TOKEN` がないと起動しなくなった(有料機能の利用ではない)。
+`.env` に設定して起動する運用に変更(この運用自体は @CLAUDE.md の git 運用セクションで元々想定されていた)。
 
 ---
 
