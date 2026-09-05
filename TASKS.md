@@ -87,11 +87,12 @@
 
 ## Task 5: 検索クエリの検証
 
-- [ ] `scripts/search-examples.sh` — @docs/verification-plan.md の V2 の6要件を
+- [x] `scripts/search-examples.sh` — @docs/verification-plan.md の V2 の6要件を
       それぞれ curl で叩けるようにする
-- [ ] 各クエリの意図をコメントで書く(なぜ `filter` に入れたか、など)
+- [x] 各クエリの意図をコメントで書く(なぜ `filter` に入れたか、など)
 
-**確認**: V2 の6件すべてが意図した結果を返す
+**確認**: V2 の6件すべてが意図した結果を返す — 確認済み。
+4番は nested の効果を示す反例クエリ(4b)も追加した
 
 ---
 
