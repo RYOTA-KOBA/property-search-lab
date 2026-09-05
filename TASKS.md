@@ -98,12 +98,13 @@
 
 ## Task 6: DMS イベントのフィクスチャ
 
-- [ ] `reference/dms-event-samples/` に insert / update / delete / control の
+- [x] `reference/dms-event-samples/` に insert / update / delete / control の
       4種類の DMS 形式イベント JSON を作る
       - 形式は `{"data": {...}, "metadata": {"operation": "...", "record-type": "...", ...}}`
       - **Debezium 形式にしないこと**。理由は @docs/decisions.md の D5
-- [ ] `scripts/emit-cdc-event.sh <operation> <table> <id>` —
+- [x] `scripts/emit-cdc-event.sh <operation> <table> <id>` —
       MySQL の現在値を読んで DMS 形式イベントを組み立て、Kinesis に put-record する
+      — Kinesis ストリーム `property-cdc-events` への配送を確認済み
 
 ---
 

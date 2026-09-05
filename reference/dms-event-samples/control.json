@@ -1,0 +1,18 @@
+{
+  "control": {
+    "table-def": {
+      "table-columns": [
+        { "column-name": "id", "column-type": "BIGINT" },
+        { "column-name": "name", "column-type": "VARCHAR" }
+      ]
+    }
+  },
+  "metadata": {
+    "timestamp": "2026-09-06T00:00:00.000000Z",
+    "record-type": "control",
+    "operation": "create-table",
+    "partition-key-type": "task-id",
+    "schema-name": "property_dev",
+    "table-name": "properties"
+  }
+}
