@@ -13,7 +13,9 @@ mysql = Mysql2::Client.new(
   username: ENV.fetch("MYSQL_USER"),
   password: ENV.fetch("MYSQL_PASSWORD"),
   database: ENV.fetch("MYSQL_DATABASE"),
-  encoding: "utf8mb4"
+  encoding: "utf8mb4",
+  # created_at/updated_at を indexed_at(Time.now.utc)と同じ基準に揃える(lambda/handler.rb と同じ理由)
+  database_timezone: :utc
 )
 
 client = OpenSearch::Client.new(host: ENV.fetch("OS_ENDPOINT"))
@@ -27,6 +29,9 @@ end
 
 body = property_ids.flat_map do |id|
   doc = build_document(mysql, id)
+  # published=1 の一覧取得後、実行中に該当行が削除される可能性がある(競合)ため nil を弾く
+  next [] if doc.nil?
+
   [{ index: { _index: index_name, _id: doc[:id] } }, doc]
 end
 

@@ -1,6 +1,5 @@
-# DMS(Kinesis 経由)の CDC イベントを受け取り、対象物件を非正規化して OpenSearch に反映する。
-# lib/document_builder.rb はビルド時にこのディレクトリへコピーされたものを使う(deploy-lambda.sh 参照)。
-require "bundler/setup" # vendor/bundle に固めた gem を読めるようにする
+# lib/document_builder.rb はビルド時にこのディレクトリへコピーされたものを使う(deploy-lambda.sh 参照)
+require "bundler/setup"
 require "json"
 require "base64"
 require "mysql2"
@@ -8,6 +7,7 @@ require "opensearch-ruby"
 require_relative "lib/document_builder"
 
 def lambda_handler(event:, context:)
+  # @ は main オブジェクトに残るため、ウォームスタート間で接続を使い回せる
   mysql = mysql_client
   client = opensearch_client
 
@@ -29,8 +29,6 @@ def process_record(record, mysql, client)
   operation = metadata["operation"]
   data = payload["data"] || {}
 
-  # properties 自身のイベントは id、子テーブル(images/stations)のイベントは
-  # property_id で「どの物件のドキュメントを更新すべきか」を割り出す
   property_id = table == "properties" ? data["id"] : data["property_id"]
   return if property_id.nil?
 
@@ -58,15 +56,17 @@ rescue OpenSearch::Transport::Transport::Errors::NotFound
 end
 
 def mysql_client
-  Mysql2::Client.new(
+  @mysql_client ||= Mysql2::Client.new(
     host: ENV.fetch("MYSQL_HOST", "127.0.0.1"),
     username: ENV.fetch("MYSQL_USER"),
     password: ENV.fetch("MYSQL_PASSWORD"),
     database: ENV.fetch("MYSQL_DATABASE"),
-    encoding: "utf8mb4"
+    encoding: "utf8mb4",
+    database_timezone: :utc, # indexed_at(UTC)と基準を揃える
+    reconnect: true # ウォームスタート間で切れていたら繋ぎ直す
   )
 end
 
 def opensearch_client
-  OpenSearch::Client.new(host: ENV.fetch("OS_ENDPOINT"))
+  @opensearch_client ||= OpenSearch::Client.new(host: ENV.fetch("OS_ENDPOINT"))
 end

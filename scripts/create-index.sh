@@ -12,9 +12,17 @@ INDEX_NAME="properties_${VERSION}"
 ALIAS_NAME="properties_search"
 
 echo "インデックス ${INDEX_NAME} を作成します..."
-curl -s -XPUT "${OS_ENDPOINT}/${INDEX_NAME}" \
+CREATE_RESPONSE=$(curl -s -XPUT "${OS_ENDPOINT}/${INDEX_NAME}" \
   -H 'Content-Type: application/json' \
-  -d @reference/index-mapping.json
+  -d @reference/index-mapping.json)
+echo "$CREATE_RESPONSE"
+
+# curl は HTTP 4xx/5xx でも exit 0 を返すため、レスポンス本体で成否を判定する
+# (already_exists は再実行時によくあるので許容し、それ以外のエラーで止める)
+if echo "$CREATE_RESPONSE" | jq -e 'has("error") and (.error.type != "resource_already_exists_exception")' > /dev/null; then
+  echo "インデックス作成に失敗しました: ${CREATE_RESPONSE}" >&2
+  exit 1
+fi
 
 echo
 echo "エイリアス ${ALIAS_NAME} を ${INDEX_NAME} に張り替えます..."
@@ -32,9 +40,15 @@ if [ -n "$OLD_INDEX" ] && [ "$OLD_INDEX" != "$INDEX_NAME" ]; then
 fi
 ACTIONS="${ACTIONS}]}"
 
-curl -s -XPOST "${OS_ENDPOINT}/_aliases" \
+ALIAS_RESPONSE=$(curl -s -XPOST "${OS_ENDPOINT}/_aliases" \
   -H 'Content-Type: application/json' \
-  -d "$ACTIONS"
+  -d "$ACTIONS")
+echo "$ALIAS_RESPONSE"
+
+if echo "$ALIAS_RESPONSE" | jq -e 'has("error")' > /dev/null; then
+  echo "エイリアスの張り替えに失敗しました: ${ALIAS_RESPONSE}" >&2
+  exit 1
+fi
 
 echo
 echo "完了: ${ALIAS_NAME} -> ${INDEX_NAME}"

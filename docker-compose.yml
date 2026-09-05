@@ -46,3 +46,9 @@ services:
 volumes:
   localstack-data:
   mysql-data:
+
+networks:
+  # LAMBDA_DOCKER_NETWORK は Compose が自動生成するネットワーク名(ディレクトリ名依存)を
+  # 決め打ちで参照しているため、ディレクトリ名が変わっても壊れないよう名前を固定する
+  default:
+    name: property-search-lab_default

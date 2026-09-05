@@ -1,9 +1,5 @@
-# 本番の Lambda にそのまま移植する非正規化ロジック。
-# MySQL 接続とプロパティ ID だけを受け取り、他の関心事(接続確立、投入先、CDC パース)を混ぜない。
-
 def build_document(mysql, property_id)
-  # property_id は必ず整数の主キーであり、外部イベントから来た値でも
-  # to_i で安全に丸めてから SQL に埋め込む(mysql2 にバインドパラメータ API がないため)
+  # mysql2 にバインドパラメータ API が無いため、to_i で整数に丸めてから埋め込む
   id = property_id.to_i
 
   property = mysql.query("SELECT * FROM properties WHERE id = #{id}").first
@@ -27,8 +23,6 @@ def build_document(mysql, property_id)
     published: property["published"] == 1,
     location: geo_point(property["lat"], property["lng"]),
 
-    # 「駅から徒歩◯分」の絞り込みは検索時に子テーブルを JOIN したくないので、
-    # 検索用の代表値をここで一つに畳んでおく
     min_walk_minutes: stations.map { |s| s["walk_minutes"] }.min,
     station_names: stations.map { |s| s["station_name"] }.uniq,
 
