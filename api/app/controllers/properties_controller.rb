@@ -26,6 +26,10 @@ class PropertiesController < ApplicationController
     render json: @property.as_json(**RESPONSE_INCLUDE)
   end
 
+  def search
+    render json: PropertySearch.new(search_params).call
+  end
+
   private
 
   def set_property
@@ -37,6 +41,14 @@ class PropertiesController < ApplicationController
       :name, :address, :price, :layout, :area_m2, :lat, :lng, :published,
       property_images_attributes: %i[url position],
       property_stations_attributes: %i[station_name line_name walk_minutes]
+    )
+  end
+
+  def search_params
+    params.permit(
+      :q, :min_price, :max_price, :max_walk_minutes,
+      :lat, :lng, :radius_km, :line_name, :sort, :page, :per_page, :facets,
+      layouts: []
     )
   end
 end
