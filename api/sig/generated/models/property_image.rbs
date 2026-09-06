@@ -1,0 +1,5 @@
+# Generated from app/models/property_image.rb with RBS::Inline
+
+class PropertyImage < ApplicationRecord
+  include EmitsCdcEvent
+end

@@ -279,9 +279,9 @@ test 環境では実際に put-record しない(AWS SDK 組み込みのスタブ
 
 ---
 
-## D17. Ridgepole 導入時に踏んだ問題
+## D17. Ridgepole / rbs-inline / rbs_rails 導入時に踏んだ問題
 
-**記録(2026-09)。** D15 の導入作業中に踏んだ、次に同じ調査をしなくて済むようにするための記録。
+**記録(2026-09)。** D15/D16 の導入作業中に踏んだ、次に同じ調査をしなくて済むようにするための記録。
 
 - **Ridgepole で `created_at`/`updated_at` に `default: -> { "CURRENT_TIMESTAMP" }` を指定すると
   `Mysql2::Error: Invalid default value` で `--apply` が失敗する**。既存カラムとの差分を
@@ -289,6 +289,16 @@ test 環境では実際に put-record しない(AWS SDK 組み込みのスタブ
   送られてしまう。ActiveRecord は保存のたびに created_at/updated_at を明示的にセットするため、
   DB レベルの `DEFAULT`/`ON UPDATE CURRENT_TIMESTAMP` は実質不要と判断し、
   素の `t.timestamps null: false` に変更して回避した(`api/db/Schemafile`)
+- **rbs-inline はデフォルトが `--opt-in`** で、ファイルの先頭に `# rbs_inline: enabled` コメントが
+  ないと `#:` アノテーションを無視する(`rbs-inline --output=... app lib` を実行しても
+  0ファイルしか生成されない)。マーカーをファイルごとに書き足す運用は避け、
+  `--opt-out`(デフォルトで全ファイルを対象にし、除外したいファイルだけ
+  `# rbs_inline: disabled` を書く)を使うことにした(`api/lib/tasks/rbs.rake`)
+- **rbs_rails が生成する RBS は `ActiveRecord::Base`, `ActionController::API` などコア型を
+  参照するが、`rbs` gem 単体にはこれらの sig が含まれていない**。`bundle exec rbs collection init`
+  → `bundle exec rbs collection install` で `ruby/gem_rbs_collection` から
+  activerecord/actionpack/activesupport 等の RBS を取得する必要がある。
+  取得先の `api/.gem_rbs_collection/` は `rbs_collection.lock.yaml` から再現可能なため `.gitignore` 対象にした
 - **Rake の制限**: `bundle exec rake "ridgepole:apply[development]" "ridgepole:apply[test]"` のように
   同じ引数付きタスクを1回の rake 呼び出しで2回指定しても、Rake は「同じタスクの2回目の invoke」を
   (引数が違っても)無視して1回しか実行しない。`scripts/setup-mysql.sh` では

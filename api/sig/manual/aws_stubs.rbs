@@ -1,0 +1,18 @@
+# aws-sdk-kinesis / aws-sdk-core は自動生成の RBS を同梱しているが、
+# EmitsCdcEvent / Cdc が rescue している一部のクラスが含まれていなかったため、
+# 既存モジュールに追記する形で補う。
+module Aws
+  module Kinesis
+    module Errors
+      class ResourceInUseException < ::Aws::Errors::ServiceError
+      end
+    end
+  end
+end
+
+module Seahorse
+  module Client
+    class NetworkingError < StandardError
+    end
+  end
+end

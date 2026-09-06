@@ -1,0 +1,26 @@
+# resolve-type-names: false
+
+interface ::_RbsRailsPathHelpers
+  def rails_info_properties_path: (*untyped) -> ::String
+  def rails_info_routes_path: (*untyped) -> ::String
+  def rails_info_notes_path: (*untyped) -> ::String
+  def rails_info_path: (*untyped) -> ::String
+  def rails_health_check_path: (*untyped) -> ::String
+  def search_properties_path: (*untyped) -> ::String
+  def properties_path: (*untyped) -> ::String
+  def property_path: (*untyped) -> ::String
+  def rails_info_properties_url: (*untyped) -> ::String
+  def rails_info_routes_url: (*untyped) -> ::String
+  def rails_info_notes_url: (*untyped) -> ::String
+  def rails_info_url: (*untyped) -> ::String
+  def rails_health_check_url: (*untyped) -> ::String
+  def search_properties_url: (*untyped) -> ::String
+  def properties_url: (*untyped) -> ::String
+  def property_url: (*untyped) -> ::String
+end
+
+module ::ActionController
+  class ::ActionController::Base
+    include ::_RbsRailsPathHelpers
+  end
+end

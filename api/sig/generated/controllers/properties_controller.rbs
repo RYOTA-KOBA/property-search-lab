@@ -1,0 +1,28 @@
+# Generated from app/controllers/properties_controller.rb with RBS::Inline
+
+class PropertiesController < ApplicationController
+  RESPONSE_INCLUDE: Hash[Symbol, untyped]
+
+  # : () -> void
+  def create: () -> void
+
+  # : () -> void
+  def show: () -> void
+
+  # : () -> void
+  def update: () -> void
+
+  # : () -> void
+  def search: () -> void
+
+  private
+
+  # : () -> void
+  def set_property: () -> void
+
+  # : () -> ActionController::Parameters
+  def property_params: () -> ActionController::Parameters
+
+  # : () -> ActionController::Parameters
+  def search_params: () -> ActionController::Parameters
+end

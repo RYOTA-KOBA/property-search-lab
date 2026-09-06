@@ -15,3 +15,6 @@ api/.byebug_history
 
 # RSpec の実行結果永続化ファイル(--only-failures 用。ローカルの実行履歴でしかない)
 api/spec/examples.txt
+
+# rbs collection(サードパーティ gem の RBS。rbs_collection.lock.yaml から再現可能なので追わない)
+api/.gem_rbs_collection/

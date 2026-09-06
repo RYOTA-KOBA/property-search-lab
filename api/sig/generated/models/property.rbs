@@ -1,0 +1,10 @@
+# Generated from app/models/property.rb with RBS::Inline
+
+class Property < ApplicationRecord
+  include EmitsCdcEvent
+
+  # BigDecimal は as_json でデフォルト文字列化されるが、OpenSearch 側(検索 API)は
+  # 数値で返るため、詳細 API と型を揃える
+  # : (?Hash[untyped, untyped] options) -> Hash[String, untyped]
+  def as_json: (?Hash[untyped, untyped] options) -> Hash[String, untyped]
+end

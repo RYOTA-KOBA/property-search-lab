@@ -1,0 +1,7 @@
+# opensearch-ruby には RBS が存在しないため、実際に使っている範囲だけ最小限に手書きする
+module OpenSearch
+  class Client
+    def initialize: (host: String) -> void
+    def search: (index: String, body: untyped) -> untyped
+  end
+end

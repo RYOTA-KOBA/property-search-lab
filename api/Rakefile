@@ -3,4 +3,7 @@
 
 require_relative "config/application"
 
+require "rbs_rails/rake_task"
+RbsRails::RakeTask.new
+
 Rails.application.load_tasks

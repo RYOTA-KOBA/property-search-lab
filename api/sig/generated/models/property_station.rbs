@@ -1,0 +1,5 @@
+# Generated from app/models/property_station.rb with RBS::Inline
+
+class PropertyStation < ApplicationRecord
+  include EmitsCdcEvent
+end

@@ -27,4 +27,10 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   gem "rspec-rails"
+
+  # RBS 型定義(#: 記法によるインラインアノテーション + ActiveRecord モデルの自動生成 + 型検査)
+  gem "rbs"
+  gem "rbs-inline"
+  gem "rbs_rails"
+  gem "steep"
 end

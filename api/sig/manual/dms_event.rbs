@@ -1,0 +1,8 @@
+# build_dms_event はリポジトリルートの lib/dms_event.rb で定義された top-level 関数
+# (api/config/initializers/dms_event.rb で require_relative される)。
+# rbs-inline のスキャン対象(api/app, api/lib)の外にあるため手書きする。
+class Object
+  private
+
+  def build_dms_event: (table: String, operation: String, data: Hash[String, untyped]) -> Hash[String, untyped]
+end

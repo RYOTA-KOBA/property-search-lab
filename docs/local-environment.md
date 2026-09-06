@@ -72,11 +72,17 @@ cd api && bundle install && bin/rails s
 `api/db/Schemafile` を変更したときは `bundle exec rake ridgepole:apply[development]` /
 `[test]` の両方を流し、`property_dev` と `property_test` の両方に反映すること。
 
-## api/ のテスト
+## api/ のテスト・型定義
 
 ```bash
 cd api
-bundle exec rspec   # LocalStack が起動していなくても通る(Cdc をスタブ化しているため)
+bundle exec rspec                          # LocalStack が起動していなくても通る(Cdc をスタブ化しているため)
+
+# 初回のみ: rails/activerecord 等サードパーティ gem の RBS を取得する(.gem_rbs_collection/ は .gitignore 対象)
+bundle exec rbs collection install
+
+bundle exec rake rbs:generate              # rbs-inline / rbs_rails で sig/ 配下を再生成
+bundle exec steep check                    # 型検査
 ```
 
 ## 環境固有の注意点

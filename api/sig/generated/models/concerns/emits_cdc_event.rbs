@@ -1,0 +1,14 @@
+# Generated from app/models/concerns/emits_cdc_event.rb with RBS::Inline
+
+module EmitsCdcEvent
+  extend ActiveSupport::Concern
+
+  private
+
+  # : (String) -> void
+  def emit_cdc_event: (String) -> void
+
+  # attributes は include 先の ActiveRecord::Base インスタンスメソッド(理由は上記コメント参照)
+  # : () -> Hash[String, untyped]
+  def cdc_attributes: () -> Hash[String, untyped]
+end

@@ -7,6 +7,7 @@ require "aws-sdk-kinesis"
 module Cdc
   STREAM_NAME = "property-cdc-events"
 
+  #: () -> untyped
   def self.client
     @client ||= Aws::Kinesis::Client.new(
       endpoint: ENV.fetch("LOCALSTACK_ENDPOINT", "http://localhost:4566"),
@@ -18,12 +19,14 @@ module Cdc
     ).tap { |c| ensure_stream(c) }
   end
 
+  #: (untyped) -> void
   def self.ensure_stream(client)
     client.create_stream(stream_name: STREAM_NAME, shard_count: 1)
   rescue Aws::Kinesis::Errors::ResourceInUseException
     # 既に存在する
   end
 
+  #: (table: String, operation: String, data: Hash[String, untyped]) -> Hash[String, untyped]
   def self.publish(table:, operation:, data:)
     event = build_dms_event(table: table, operation: operation, data: data)
     client.put_record(

@@ -1,0 +1,14 @@
+# Generated from app/lib/cdc.rb with RBS::Inline
+
+module Cdc
+  STREAM_NAME: ::String
+
+  # : () -> untyped
+  def self.client: () -> untyped
+
+  # : (untyped) -> void
+  def self.ensure_stream: (untyped) -> void
+
+  # : (table: String, operation: String, data: Hash[String, untyped]) -> Hash[String, untyped]
+  def self.publish: (table: String, operation: String, data: Hash[String, untyped]) -> Hash[String, untyped]
+end

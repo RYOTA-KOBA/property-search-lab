@@ -1,0 +1,297 @@
+# resolve-type-names: false
+
+class ::PropertyStation < ::ApplicationRecord
+  extend ::ActiveRecord::Base::ClassMethods[::PropertyStation, ::PropertyStation::ActiveRecord_Relation, ::Integer]
+
+  module ::PropertyStation::GeneratedAttributeMethods
+    def id: () -> ::Integer
+
+    def id=: (::Integer) -> ::Integer
+
+    def id?: () -> bool
+
+    def id_changed?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def id_change: () -> [ ::Integer?, ::Integer? ]
+
+    def id_will_change!: () -> void
+
+    def id_was: () -> ::Integer?
+
+    def id_previously_changed?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def id_previous_change: () -> ::Array[::Integer?]?
+
+    def id_previously_was: () -> ::Integer?
+
+    def id_before_last_save: () -> ::Integer?
+
+    def id_change_to_be_saved: () -> ::Array[::Integer?]?
+
+    def id_in_database: () -> ::Integer?
+
+    def saved_change_to_id: () -> ::Array[::Integer?]?
+
+    def saved_change_to_id?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def will_save_change_to_id?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def restore_id!: () -> void
+
+    def clear_id_change: () -> void
+
+    def id_before_type_cast: () -> ::Integer
+
+    def id_for_database: () -> ::Integer
+
+    def property_id: () -> ::Integer
+
+    def property_id=: (::Integer) -> ::Integer
+
+    def property_id?: () -> bool
+
+    def property_id_changed?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def property_id_change: () -> [ ::Integer?, ::Integer? ]
+
+    def property_id_will_change!: () -> void
+
+    def property_id_was: () -> ::Integer?
+
+    def property_id_previously_changed?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def property_id_previous_change: () -> ::Array[::Integer?]?
+
+    def property_id_previously_was: () -> ::Integer?
+
+    def property_id_before_last_save: () -> ::Integer?
+
+    def property_id_change_to_be_saved: () -> ::Array[::Integer?]?
+
+    def property_id_in_database: () -> ::Integer?
+
+    def saved_change_to_property_id: () -> ::Array[::Integer?]?
+
+    def saved_change_to_property_id?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def will_save_change_to_property_id?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def restore_property_id!: () -> void
+
+    def clear_property_id_change: () -> void
+
+    def property_id_before_type_cast: () -> ::Integer
+
+    def property_id_for_database: () -> ::Integer
+
+    def station_name: () -> ::String
+
+    def station_name=: (::String) -> ::String
+
+    def station_name?: () -> bool
+
+    def station_name_changed?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def station_name_change: () -> [ ::String?, ::String? ]
+
+    def station_name_will_change!: () -> void
+
+    def station_name_was: () -> ::String?
+
+    def station_name_previously_changed?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def station_name_previous_change: () -> ::Array[::String?]?
+
+    def station_name_previously_was: () -> ::String?
+
+    def station_name_before_last_save: () -> ::String?
+
+    def station_name_change_to_be_saved: () -> ::Array[::String?]?
+
+    def station_name_in_database: () -> ::String?
+
+    def saved_change_to_station_name: () -> ::Array[::String?]?
+
+    def saved_change_to_station_name?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def will_save_change_to_station_name?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def restore_station_name!: () -> void
+
+    def clear_station_name_change: () -> void
+
+    def station_name_before_type_cast: () -> ::String
+
+    def station_name_for_database: () -> ::String
+
+    def line_name: () -> ::String?
+
+    def line_name=: (::String?) -> ::String?
+
+    def line_name?: () -> bool
+
+    def line_name_changed?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def line_name_change: () -> [ ::String?, ::String? ]
+
+    def line_name_will_change!: () -> void
+
+    def line_name_was: () -> ::String?
+
+    def line_name_previously_changed?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def line_name_previous_change: () -> ::Array[::String?]?
+
+    def line_name_previously_was: () -> ::String?
+
+    def line_name_before_last_save: () -> ::String?
+
+    def line_name_change_to_be_saved: () -> ::Array[::String?]?
+
+    def line_name_in_database: () -> ::String?
+
+    def saved_change_to_line_name: () -> ::Array[::String?]?
+
+    def saved_change_to_line_name?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def will_save_change_to_line_name?: (?from: ::String?, ?to: ::String?) -> bool
+
+    def restore_line_name!: () -> void
+
+    def clear_line_name_change: () -> void
+
+    def line_name_before_type_cast: () -> ::String?
+
+    def line_name_for_database: () -> ::String?
+
+    def walk_minutes: () -> ::Integer
+
+    def walk_minutes=: (::Integer) -> ::Integer
+
+    def walk_minutes?: () -> bool
+
+    def walk_minutes_changed?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def walk_minutes_change: () -> [ ::Integer?, ::Integer? ]
+
+    def walk_minutes_will_change!: () -> void
+
+    def walk_minutes_was: () -> ::Integer?
+
+    def walk_minutes_previously_changed?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def walk_minutes_previous_change: () -> ::Array[::Integer?]?
+
+    def walk_minutes_previously_was: () -> ::Integer?
+
+    def walk_minutes_before_last_save: () -> ::Integer?
+
+    def walk_minutes_change_to_be_saved: () -> ::Array[::Integer?]?
+
+    def walk_minutes_in_database: () -> ::Integer?
+
+    def saved_change_to_walk_minutes: () -> ::Array[::Integer?]?
+
+    def saved_change_to_walk_minutes?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def will_save_change_to_walk_minutes?: (?from: ::Integer?, ?to: ::Integer?) -> bool
+
+    def restore_walk_minutes!: () -> void
+
+    def clear_walk_minutes_change: () -> void
+
+    def walk_minutes_before_type_cast: () -> ::Integer
+
+    def walk_minutes_for_database: () -> ::Integer
+  end
+  include ::PropertyStation::GeneratedAttributeMethods
+  module ::PropertyStation::GeneratedAliasAttributeMethods
+    include ::PropertyStation::GeneratedAttributeMethods
+
+    alias id_value id
+
+    alias id_value= id=
+
+    alias id_value? id?
+
+    alias id_value_changed? id_changed?
+
+    alias id_value_change id_change
+
+    alias id_value_will_change! id_will_change!
+
+    alias id_value_was id_was
+
+    alias id_value_previously_changed? id_previously_changed?
+
+    alias id_value_previous_change id_previous_change
+
+    alias id_value_previously_was id_previously_was
+
+    alias id_value_before_last_save id_before_last_save
+
+    alias id_value_change_to_be_saved id_change_to_be_saved
+
+    alias id_value_in_database id_in_database
+
+    alias saved_change_to_id_value saved_change_to_id
+
+    alias saved_change_to_id_value? saved_change_to_id?
+
+    alias will_save_change_to_id_value? will_save_change_to_id?
+
+    alias restore_id_value! restore_id!
+
+    alias clear_id_value_change clear_id_change
+
+    alias id_value_before_type_cast id_before_type_cast
+
+    alias id_value_for_database id_for_database
+  end
+  include ::PropertyStation::GeneratedAliasAttributeMethods
+
+  def property: () -> ::Property
+  def property=: (::Property?) -> ::Property?
+  def reload_property: () -> ::Property?
+  def build_property: (?untyped) -> ::Property
+  def create_property: (?untyped) -> ::Property
+  def create_property!: (?untyped) -> ::Property
+
+  module ::PropertyStation::GeneratedAssociationMethods
+  end
+  include ::PropertyStation::GeneratedAssociationMethods
+
+  module ::PropertyStation::GeneratedRelationMethods
+  end
+
+  class ::PropertyStation::ActiveRecord_Relation < ::ActiveRecord::Relation
+    include ::Enumerable[::PropertyStation]
+    include ::PropertyStation::GeneratedRelationMethods
+    include ::ActiveRecord::Relation::Methods[::PropertyStation, ::Integer]
+  end
+
+  class ::PropertyStation::ActiveRecord_Associations_CollectionProxy < ::ActiveRecord::Associations::CollectionProxy
+    include ::Enumerable[::PropertyStation]
+    include ::PropertyStation::GeneratedRelationMethods
+    include ::ActiveRecord::Relation::Methods[::PropertyStation, ::Integer]
+
+    def build: (?::ActiveRecord::Associations::CollectionProxy::_EachPair attributes) ?{ () -> untyped } -> ::PropertyStation
+             | (::Array[::ActiveRecord::Associations::CollectionProxy::_EachPair] attributes) ?{ () -> untyped } -> ::Array[::PropertyStation]
+    def create: (?::ActiveRecord::Associations::CollectionProxy::_EachPair attributes) ?{ () -> untyped } -> ::PropertyStation
+              | (::Array[::ActiveRecord::Associations::CollectionProxy::_EachPair] attributes) ?{ () -> untyped } -> ::Array[::PropertyStation]
+    def create!: (?::ActiveRecord::Associations::CollectionProxy::_EachPair attributes) ?{ () -> untyped } -> ::PropertyStation
+               | (::Array[::ActiveRecord::Associations::CollectionProxy::_EachPair] attributes) ?{ () -> untyped } -> ::Array[::PropertyStation]
+    def reload: () -> ::Array[::PropertyStation]
+
+    def replace: (::Array[::PropertyStation]) -> void
+    def delete: (*::PropertyStation | ::Integer) -> ::Array[::PropertyStation]
+    def destroy: (*::PropertyStation | ::Integer) -> ::Array[::PropertyStation]
+    def <<: (*::PropertyStation | ::Array[::PropertyStation]) -> self
+    def prepend: (*::PropertyStation | ::Array[::PropertyStation]) -> self
+  end
+end
+
+class ::ApplicationRecord < ::ActiveRecord::Base
+end
+class ::Property < ::ApplicationRecord
+end

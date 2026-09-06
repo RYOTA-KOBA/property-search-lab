@@ -1,0 +1,66 @@
+# Generated from app/services/property_search.rb with RBS::Inline
+
+# docs/verification-plan.md の V2 で確認したクエリ DSL(scripts/search-examples.sh と同じ形)を
+# HTTP のクエリパラメータから組み立てる。OpenSearch の _source をほぼそのまま返す
+# (docs/architecture.md の「レスポンスをほぼそのまま変換できる」を実地で確認する狙い)。
+class PropertySearch
+  DEFAULT_PER_PAGE: ::Integer
+
+  INDEX_NAME: untyped
+
+  # params は ActionController::Parameters(コントローラ経由)と Hash(テストでの直接呼び出し)の
+  # 両方が渡ってくるため untyped にする
+  # client を渡すとそれを使う(テストでダブルを注入するため)。省略時は OpenSearch::Client を都度生成する
+  # : (untyped params, ?client: untyped?) -> void
+  def initialize: (untyped params, ?client: untyped?) -> void
+
+  # : () -> Hash[Symbol, untyped]
+  def call: () -> Hash[Symbol, untyped]
+
+  private
+
+  attr_reader params: untyped
+
+  # : () -> untyped
+  def client: () -> untyped
+
+  # : () -> Hash[Symbol, untyped]
+  def request_body: () -> Hash[Symbol, untyped]
+
+  # : () -> bool
+  def facets?: () -> bool
+
+  # docs/verification-plan.md V2 の5番(間取り別件数・価格帯ヒストグラム)に対応
+  # : () -> Hash[Symbol, untyped]
+  def aggregations: () -> Hash[Symbol, untyped]
+
+  # : () -> Array[Hash[Symbol, untyped]]
+  def filters: () -> Array[Hash[Symbol, untyped]]
+
+  # : () -> Array[Hash[Symbol, untyped]]
+  def price_filters: () -> Array[Hash[Symbol, untyped]]
+
+  # : () -> Array[String]
+  def layouts: () -> Array[String]
+
+  # : () -> bool
+  def geo_search?: () -> bool
+
+  # : () -> Hash[Symbol, Float]
+  def geo_point: () -> Hash[Symbol, Float]
+
+  # : () -> Hash[Symbol, untyped]
+  def geo_distance_filter: () -> Hash[Symbol, untyped]
+
+  # : () -> Hash[Symbol, untyped]
+  def nested_line_filter: () -> Hash[Symbol, untyped]
+
+  # : () -> Array[untyped]?
+  def sort_clause: () -> Array[untyped]?
+
+  # : () -> Integer
+  def page: () -> Integer
+
+  # : () -> Integer
+  def per_page: () -> Integer
+end

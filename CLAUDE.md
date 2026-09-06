@@ -25,6 +25,7 @@ Rails + Aurora MySQL のアプリで、物件検索のパフォーマンスを O
   ホストで `bin/rails s` を直接起動する(docker-compose には加えない)。
   スキーマは `api/db/Schemafile` が正で、Ridgepole で管理する(マイグレーションは持たない。@docs/decisions.md D15)
 - テストは RSpec(`api/spec/`)で書く
+- 型定義は RBS(rbs, rbs-inline, rbs_rails, steep)で行う。インラインアノテーションは `#:` 記法を使う
 - 検索クライアント: Ruby + `opensearch-ruby`(scripts/ と api/ の双方で使用)
 - IaC: 使わない。シェルスクリプト + AWS CLI で完結させる
 

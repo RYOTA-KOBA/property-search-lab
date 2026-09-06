@@ -5,12 +5,16 @@ class PropertySearch
   DEFAULT_PER_PAGE = 20
   INDEX_NAME = "properties_search".freeze
 
+  # params は ActionController::Parameters(コントローラ経由)と Hash(テストでの直接呼び出し)の
+  # 両方が渡ってくるため untyped にする
   # client を渡すとそれを使う(テストでダブルを注入するため)。省略時は OpenSearch::Client を都度生成する
+  #: (untyped params, ?client: untyped?) -> void
   def initialize(params, client: nil)
     @params = params
     @client = client
   end
 
+  #: () -> Hash[Symbol, untyped]
   def call
     response = client.search(index: INDEX_NAME, body: request_body)
     result = {
@@ -23,27 +27,31 @@ class PropertySearch
 
   private
 
-  attr_reader :params
+  attr_reader :params #: untyped
 
+  #: () -> untyped
   def client
     @client ||= OpenSearch::Client.new(host: ENV.fetch("OS_ENDPOINT"))
   end
 
+  #: () -> Hash[Symbol, untyped]
   def request_body
-    query = { bool: { filter: filters } }
+    query = { bool: { filter: filters } } #: Hash[Symbol, untyped]
     query[:bool][:must] = [{ multi_match: { query: params[:q], fields: %w[name address] } }] if params[:q].present?
 
-    body = { query: query, from: (page - 1) * per_page, size: per_page }
+    body = { query: query, from: (page - 1) * per_page, size: per_page } #: Hash[Symbol, untyped]
     body[:sort] = sort_clause if sort_clause
     body[:aggs] = aggregations if facets?
     body
   end
 
+  #: () -> bool
   def facets?
     ActiveModel::Type::Boolean.new.cast(params[:facets])
   end
 
   # docs/verification-plan.md V2 の5番(間取り別件数・価格帯ヒストグラム)に対応
+  #: () -> Hash[Symbol, untyped]
   def aggregations
     {
       by_layout: { terms: { field: "layout" } },
@@ -56,6 +64,7 @@ class PropertySearch
     }
   end
 
+  #: () -> Array[Hash[Symbol, untyped]]
   def filters
     [
       { term: { published: true } },
@@ -67,6 +76,7 @@ class PropertySearch
     ].compact
   end
 
+  #: () -> Array[Hash[Symbol, untyped]]
   def price_filters
     [
       (params[:min_price].present? ? { range: { price: { gte: params[:min_price].to_i } } } : nil),
@@ -74,6 +84,7 @@ class PropertySearch
     ].compact
   end
 
+  #: () -> Array[String]
   def layouts
     case params[:layouts]
     when Array then params[:layouts]
@@ -82,22 +93,27 @@ class PropertySearch
     end
   end
 
+  #: () -> bool
   def geo_search?
     params[:lat].present? && params[:lng].present? && params[:radius_km].present?
   end
 
+  #: () -> Hash[Symbol, Float]
   def geo_point
     { lat: params[:lat].to_f, lon: params[:lng].to_f }
   end
 
+  #: () -> Hash[Symbol, untyped]
   def geo_distance_filter
     { geo_distance: { distance: "#{params[:radius_km]}km", location: geo_point } }
   end
 
+  #: () -> Hash[Symbol, untyped]
   def nested_line_filter
     { nested: { path: "stations", query: { term: { "stations.line_name" => params[:line_name] } } } }
   end
 
+  #: () -> Array[untyped]?
   def sort_clause
     case params[:sort]
     when "price_asc" then [{ price: "asc" }]
@@ -107,10 +123,12 @@ class PropertySearch
     end
   end
 
+  #: () -> Integer
   def page
     [params[:page].to_i, 1].max
   end
 
+  #: () -> Integer
   def per_page
     value = params[:per_page].to_i
     value.positive? ? value : DEFAULT_PER_PAGE
