@@ -17,6 +17,11 @@ gem "dotenv"
 gem "opensearch-ruby"
 gem "aws-sdk-kinesis"
 
+group :development do
+  # スキーマは reference/schema.sql ではなく Ridgepole(api/db/Schemafile)で管理する(docs/decisions.md D15)
+  gem "ridgepole"
+end
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

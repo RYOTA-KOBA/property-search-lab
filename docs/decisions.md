@@ -237,3 +237,40 @@ Kinesis 以降(Lambda → OpenSearch)の非同期性は D3 の設計のまま変
 put-record が失敗しても書き込みそのものは失敗させず、ログに残すだけにしている
 (`EmitsCdcEvent#emit_cdc_event` の rescue 節)。本番の DMS も CDC 基盤の不調で
 アプリの書き込みを止めることはないため、この非依存性を再現している。
+
+---
+
+## D15. api/ のスキーマ管理を reference/schema.sql から Rails + Ridgepole に変更する
+
+**採用(2026-09)。**
+
+これまで `reference/schema.sql`(`mysql/init/01_schema.sql` に複製)を正のスキーマ定義とし、
+Rails 側はマイグレーションを持たない方針だった。これは「検索基盤の検証に集中し、Rails 側は
+薄く保つ」という当初のスコープに沿ったものだったが、今回 Rails 側のスキーマ管理・テスト・型定義の
+開発体験そのものも検証対象に含めることにしたため、スキーマの正を `api/db/Schemafile` に移し、
+Ridgepole(`bundle exec rake ridgepole:apply[env]`)で適用する方式に変更した。
+
+`reference/schema.sql` と `mysql/init/01_schema.sql` は削除し、シードデータは `api/db/seeds.rb` に
+移植した。MySQL コンテナの初期化は空データベースの作成(`property_dev` は `MYSQL_DATABASE` 環境変数、
+`property_test` は `mysql/init/02_test_database.sql`)のみを担い、テーブル定義は持たない。
+
+**この決定の影響範囲**: これはあくまで `api/` 内のスキーマ管理方法の変更であり、
+D1〜D14 で決めた CDC / DMS / Kinesis / Lambda まわりの構成には影響しない。
+DMS 形式のイベント(`data`/`metadata`)や非正規化ロジックは従来通り。
+
+---
+
+## D17. Ridgepole 導入時に踏んだ問題
+
+**記録(2026-09)。** D15 の導入作業中に踏んだ、次に同じ調査をしなくて済むようにするための記録。
+
+- **Ridgepole で `created_at`/`updated_at` に `default: -> { "CURRENT_TIMESTAMP" }` を指定すると
+  `Mysql2::Error: Invalid default value` で `--apply` が失敗する**。既存カラムとの差分を
+  `change_column` で当てる経路では、この関数デフォルトが正しく解釈されず生の文字列として
+  送られてしまう。ActiveRecord は保存のたびに created_at/updated_at を明示的にセットするため、
+  DB レベルの `DEFAULT`/`ON UPDATE CURRENT_TIMESTAMP` は実質不要と判断し、
+  素の `t.timestamps null: false` に変更して回避した(`api/db/Schemafile`)
+- **Rake の制限**: `bundle exec rake "ridgepole:apply[development]" "ridgepole:apply[test]"` のように
+  同じ引数付きタスクを1回の rake 呼び出しで2回指定しても、Rake は「同じタスクの2回目の invoke」を
+  (引数が違っても)無視して1回しか実行しない。`scripts/setup-mysql.sh` では
+  `bundle exec rake` の呼び出し自体を development 用・test 用で2プロセスに分けて回避した

@@ -1,15 +1,17 @@
-# property_dev は reference/schema.sql が正のスキーマで、マイグレーションでは管理しない
-# (docs/decisions.md 参照)。.env の MYSQL_* を通じて docker-compose の mysql サービスに繋ぐ
+# スキーマは api/db/Schemafile が正で、Ridgepole で適用する(マイグレーションは持たない。
+# docs/decisions.md D15 参照)。.env の MYSQL_* を通じて docker-compose の mysql サービスに繋ぐ
 default: &default
   adapter: mysql2
   encoding: utf8mb4
   username: <%= ENV.fetch("MYSQL_USER") %>
   password: <%= ENV.fetch("MYSQL_PASSWORD") %>
   host: <%= ENV.fetch("MYSQL_HOST", "127.0.0.1") %>
-  database: <%= ENV.fetch("MYSQL_DATABASE") %>
 
 development:
   <<: *default
+  database: <%= ENV.fetch("MYSQL_DATABASE") %>
 
+# development と DB を分け、RSpec 実行が開発用データに影響しないようにする(scripts/setup-mysql.sh で作成)
 test:
   <<: *default
+  database: property_test

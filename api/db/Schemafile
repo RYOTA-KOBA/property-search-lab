@@ -1,0 +1,37 @@
+# スキーマの正はここ(Ridgepole)。旧 reference/schema.sql は廃止した(docs/decisions.md D15)。
+# 反映は `bundle exec rake ridgepole:apply[development]` / `[test]`(scripts/setup-mysql.sh 参照)。
+
+create_table "properties", force: :cascade do |t|
+  t.string   "name",       limit: 255,               null: false
+  t.string   "address",    limit: 255,               null: false
+  t.integer  "price",                                null: false
+  t.string   "layout",     limit: 16,                null: false
+  t.decimal  "area_m2",    precision: 6,  scale: 2
+  t.decimal  "lat",        precision: 10, scale: 7
+  t.decimal  "lng",        precision: 10, scale: 7
+  t.boolean  "published",                            null: false, default: true
+  # 旧 reference/schema.sql は DB レベルで DEFAULT/ON UPDATE CURRENT_TIMESTAMP を持たせていたが、
+  # ActiveRecord は保存のたびに created_at/updated_at を明示的にセットするため実質的に不要。
+  # Ridgepole でこの関数デフォルトを change_column 経由で当てようとすると
+  # 「Invalid default value」で mysql2 に拒否される問題を踏んだため、素の t.timestamps にする
+  t.timestamps null: false
+end
+
+# 1物件 : N画像。DMS 単体では JOIN できない典型例(docs/architecture.md)
+create_table "property_images", force: :cascade do |t|
+  t.bigint  "property_id",             null: false
+  t.string  "url",         limit: 512, null: false
+  t.integer "position",                null: false, default: 0
+
+  t.index ["property_id"], name: "idx_property_id"
+end
+
+# 1物件 : N最寄駅
+create_table "property_stations", force: :cascade do |t|
+  t.bigint  "property_id",              null: false
+  t.string  "station_name", limit: 128, null: false
+  t.string  "line_name",    limit: 128
+  t.integer "walk_minutes",             null: false
+
+  t.index ["property_id"], name: "idx_property_id"
+end

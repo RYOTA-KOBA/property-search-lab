@@ -53,7 +53,7 @@ binlog 設定の正しさや同期ラグの実測は、ローカルの模倣物�
 cp .env.example .env
 docker compose up -d
 
-./scripts/setup-mysql.sh        # スキーマ + シードデータ投入
+./scripts/setup-mysql.sh        # property_test 作成 + Ridgepole でスキーマ適用(dev/test) + シードデータ投入
 ./scripts/create-domain.sh      # OpenSearch ドメイン作成
 ./scripts/create-index.sh v1    # インデックス作成 + エイリアス張り替え
 ./scripts/deploy-lambda.sh      # Lambda 作成 + Kinesis イベントソースマッピング
@@ -68,6 +68,9 @@ cd api && bundle install && bin/rails s
 ./scripts/search-examples.sh    # 各種クエリの動作確認(scripts 経由)
 ./scripts/emit-cdc-event.sh update properties 1   # SQL を直接いじった場合の手動送出
 ```
+
+`api/db/Schemafile` を変更したときは `bundle exec rake ridgepole:apply[development]` /
+`[test]` の両方を流し、`property_dev` と `property_test` の両方に反映すること。
 
 ## 環境固有の注意点
 

@@ -23,7 +23,7 @@ Rails + Aurora MySQL のアプリで、物件検索のパフォーマンスを O
 - Lambda: LocalStack の Lambda(Ruby ランタイム)
 - API: `api/` の Rails 8(`--api` モード)。登録・検索のインターフェースとして使う。
   ホストで `bin/rails s` を直接起動する(docker-compose には加えない)。
-  スキーマは reference/schema.sql が正でマイグレーションは持たない
+  スキーマは `api/db/Schemafile` が正で、Ridgepole で管理する(マイグレーションは持たない。@docs/decisions.md D15)
 - 検索クライアント: Ruby + `opensearch-ruby`(scripts/ と api/ の双方で使用)
 - IaC: 使わない。シェルスクリプト + AWS CLI で完結させる
 
