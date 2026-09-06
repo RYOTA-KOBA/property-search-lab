@@ -56,7 +56,4 @@ LocalStack はデータを永続化しないため、再起動したら `create-
 
 ## 注意
 
-- このリポジトリは元々 private 運用の想定だったが、既存の public リポジトリを流用しており、
-  ユーザー承認のもと例外的に public のまま運用している
-- `.env`、LocalStack の auth token、AWS の認証情報、実データはコミットしない
 - LocalStack の DMS / RDS プロバイダは有料プラン限定のため使わない
