@@ -21,17 +21,22 @@ OpenSearch への分離が有効かを判断するための材料を集める。
 ## 構成の要約
 
 ```
-Aurora MySQL ──binlog──> DMS(CDC) ──> Kinesis ──> Lambda(非正規化) ──> OpenSearch
-                                                                          │
-                                            Rails 検索API ────────────────┘
+[登録]  Client ──> Rails(api/) ──> MySQL(正のデータストア)
+                        │ after_commit(本番の DMS の代役)
+                        v
+                     Kinesis ──> Lambda(非正規化) ──> OpenSearch
+                                                            │
+[検索]  Client ──> Rails(api/) ──> OpenSearch ─────────────┘
+        Client ──> Rails(api/) ──> MySQL(詳細1件、CDC ラグの影響を受けない)
 ```
 
-ローカルでは DMS 部分を再現せず、DMS 形式のイベントをフィクスチャとして
-Kinesis に流す。理由は [docs/decisions.md](docs/decisions.md) の D4 / D5 を参照。
+ローカルでは DMS(binlog の検知)部分を再現せず、Rails の `after_commit` が
+その代役を務める。理由は [docs/decisions.md](docs/decisions.md) の D4 / D5 / D14 を参照。
 
 ```
-[LocalStack Community : 1コンテナ]  OpenSearch + Kinesis + Lambda
+[LocalStack Community : 1コンテナ]  OpenSearch + Kinesis + Lambda + Logs
 [素の Docker]                        MySQL 8.0 (binlog=ROW)
+[ホストで直接起動]                    Rails API(api/)
 ```
 
 ## はじめかた
@@ -47,8 +52,18 @@ docker compose up -d
 ./scripts/full-reindex.sh       # MySQL から全件を非正規化して投入
 ./scripts/deploy-lambda.sh      # Lambda 作成 + Kinesis イベントソースマッピング
 
-./scripts/search-examples.sh              # 各種クエリの動作確認
-./scripts/emit-cdc-event.sh insert property_stations 1   # CDC イベントを Kinesis に流す
+./scripts/tail-cdc.sh &          # CDC ログを別端末(または & )で追尾しておく
+(cd api && bundle install && bin/rails s)   # 登録・検索用の API を起動
+
+curl -XPOST localhost:3000/properties -H 'Content-Type: application/json' -d '{
+  "property": {"name": "王子テラス", "address": "東京都北区王子1-1-1",
+    "price": 90000, "layout": "1LDK", "area_m2": 30,
+    "property_stations_attributes": [{"station_name": "王子", "line_name": "JR京浜東北線", "walk_minutes": 4}]}
+}'
+curl "localhost:3000/properties/search?q=王子"
+
+./scripts/search-examples.sh              # scripts 側からもクエリを確認できる
+./scripts/emit-cdc-event.sh insert property_stations 1   # SQL を直接いじった場合の手動送出
 ```
 
 LocalStack はデータを永続化しないため、再起動したら `create-domain.sh` 以降を流し直す

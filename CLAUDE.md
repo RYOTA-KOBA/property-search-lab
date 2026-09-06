@@ -21,7 +21,10 @@ Rails + Aurora MySQL のアプリで、物件検索のパフォーマンスを O
 - OpenSearch: LocalStack の OpenSearch プロバイダ(kuromoji 同梱)
 - MySQL: 素の MySQL 8.0 コンテナ(binlog ROW 有効)
 - Lambda: LocalStack の Lambda(Ruby ランタイム)
-- 検索クライアント: Ruby + `opensearch-ruby`
+- API: `api/` の Rails 8(`--api` モード)。登録・検索のインターフェースとして使う。
+  ホストで `bin/rails s` を直接起動する(docker-compose には加えない)。
+  スキーマは reference/schema.sql が正でマイグレーションは持たない
+- 検索クライアント: Ruby + `opensearch-ruby`(scripts/ と api/ の双方で使用)
 - IaC: 使わない。シェルスクリプト + AWS CLI で完結させる
 
 ## 守ってほしいこと
@@ -37,7 +40,6 @@ Rails + Aurora MySQL のアプリで、物件検索のパフォーマンスを O
 ## やらないこと
 
 - 本番相当の認証・認可・IAM 設定(ローカルは security plugin 無効で進める)
-- Rails アプリ本体の実装。検索クエリの組み立てとレスポンス整形だけを Ruby スクリプトで再現する
 - CI/CD の構築
 
 ## Git 運用

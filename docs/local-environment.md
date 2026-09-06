@@ -6,23 +6,25 @@ LocalStack Community(無料)と素の MySQL コンテナを組み合わせるハ
 
 ```
 [LocalStack Community : 1コンテナ]
-    OpenSearch  +  Kinesis  +  Lambda  +  Secrets Manager
+    OpenSearch  +  Kinesis  +  Lambda  +  Secrets Manager  +  Logs
 [素の Docker]
     MySQL 8.0 (binlog=ROW)
-[ローカル実行]
-    検索クエリ確認用 Ruby スクリプト / フルリインデックススクリプト
+[ホストで直接起動]
+    Rails API(api/)                … 登録・検索のインターフェース
+    フルリインデックス / 検索確認用 Ruby スクリプト(scripts/)
 ```
 
 ## 本番との対応関係
 
 | 本番 (AWS) | ローカル | 検証できること |
 |---|---|---|
+| Rails(登録・検索 API) | `api/` の Rails(ホストで直接起動) | API の責務分割(検索は OpenSearch、詳細は MySQL) |
 | Aurora MySQL | MySQL 8.0 コンテナ | スキーマ設計、binlog 前提条件 |
-| DMS レプリケーションインスタンス | **再現しない**(イベントを手で流す) | — |
+| DMS レプリケーションインスタンス | **再現しない**。物件登録 API は `after_commit` で代わりにイベントを流す(D14)。SQL を直接叩いた場合は `scripts/emit-cdc-event.sh` で手動送出 | — |
 | Kinesis Data Streams | LocalStack Kinesis | ストリーム経由の配送 |
 | Lambda(非正規化) | LocalStack Lambda | **非正規化ロジックとイベントパース** |
 | Amazon OpenSearch Service | LocalStack OpenSearch | マッピング、Query DSL、エイリアス運用 |
-| Sidekiq 定期ジョブ | ローカル Ruby スクリプト | 全件再投入 |
+| Sidekiq 定期ジョブ | ローカル Ruby スクリプト(`full-reindex.sh`) | 全件再投入 |
 
 ## CDC 部分を再現しない理由
 
@@ -52,12 +54,19 @@ cp .env.example .env
 docker compose up -d
 
 ./scripts/setup-mysql.sh        # スキーマ + シードデータ投入
+./scripts/create-domain.sh      # OpenSearch ドメイン作成
 ./scripts/create-index.sh v1    # インデックス作成 + エイリアス張り替え
 ./scripts/deploy-lambda.sh      # Lambda 作成 + Kinesis イベントソースマッピング
 ./scripts/full-reindex.sh       # MySQL から全件を非正規化して投入
 
-./scripts/search-examples.sh    # 各種クエリの動作確認
-./scripts/emit-cdc-event.sh update 1   # DMS形式イベントを Kinesis に流す
+# 別端末で CDC ログを追尾しておくと登録の反映が見える
+./scripts/tail-cdc.sh
+
+# 別端末で API を起動(ホストで直接。docker-compose には加えない)
+cd api && bundle install && bin/rails s
+
+./scripts/search-examples.sh    # 各種クエリの動作確認(scripts 経由)
+./scripts/emit-cdc-event.sh update properties 1   # SQL を直接いじった場合の手動送出
 ```
 
 ## 環境固有の注意点

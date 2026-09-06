@@ -44,6 +44,11 @@ Rails + Aurora MySQL で物件データを管理し、JSON API として提供�
 これにより OpenSearch のレスポンスをほぼそのまま API レスポンスに変換でき、
 DB がボトルネックになる問題を根本から回避できる。
 
+この責務分割は @api/ の Rails(ローカル検証用)でそのまま実装し、実地で確認した
+(`GET /properties/search` → OpenSearch、`GET /properties/:id` → MySQL)。
+ただし更新系のトリガーはローカルでは DMS の代わりに Rails の `after_commit` を使っている
+(@docs/decisions.md D14。D3 の判断を覆すものではない)。
+
 ## なぜ Lambda を挟むのか
 
 DMS の OpenSearch ターゲットは **1テーブル = 1インデックス、1行 = 1ドキュメント**の

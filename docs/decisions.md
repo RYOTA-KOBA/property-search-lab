@@ -201,3 +201,39 @@ Amazon Linux 2 の古い mariadb クライアントライブラリ(5.5系)が対
 Lambda からの接続が `Authentication plugin 'caching_sha2_password' cannot be loaded` で
 失敗した。`mysql/conf.d/binlog.cnf` に `default_authentication_plugin = mysql_native_password`
 を追加して解決した。
+
+---
+
+## D13. 物件登録 API のリクエスト形式は JSON のみにする(protobuf は使わない)
+
+**採用(2026-09)。**
+
+却下した案: `POST /properties` を protobuf(またはJSON/protobuf 両対応)にする。
+
+protobuf の契約が守るのはクライアント → Rails の1ホップだけで、その先は
+MySQL の列 → binlog → **DMS が出力する JSON 形式**(D5 で確定済み)に変換される。
+つまりパイプライン全体を見たときに protobuf の型安全性は伝播せず、恩恵が範囲に対して薄い。
+
+加えてこの検証の主題は検索(読み取り)側であり、登録側の転送効率・スキーマ進化は
+論点になっていない。JSON であれば curl で中身をそのまま読めることも、
+このリポジトリの「検証結果を実測値で示す」という性質(@docs/verification-plan.md)に合う。
+
+---
+
+## D14. Rails の after_commit で CDC イベントを発火するのは D3 の判断を覆すものではない
+
+**採用(2026-09)。**
+
+@app/models/concerns/emits_cdc_event.rb(api/)は `after_commit` から Kinesis に
+put-record している。これは一見 D3 で却下した「after_commit での同期更新」に見えるが、
+狙いが異なる。
+
+D3 が却下したのは「**書き込みのたびに OpenSearch への反映を同期的に待つ**」構成
+(API レスポンスが検索インデックス更新の完了を待ってしまう)。
+D14 の after_commit は **本番では DMS が binlog を検知して行う役割をローカルで肩代わり
+しているだけ**で、Kinesis への put-record 自体は投げっぱなし(レスポンスは待たない)。
+Kinesis 以降(Lambda → OpenSearch)の非同期性は D3 の設計のまま変わっていない。
+
+put-record が失敗しても書き込みそのものは失敗させず、ログに残すだけにしている
+(`EmitsCdcEvent#emit_cdc_event` の rescue 節)。本番の DMS も CDC 基盤の不調で
+アプリの書き込みを止めることはないため、この非依存性を再現している。
