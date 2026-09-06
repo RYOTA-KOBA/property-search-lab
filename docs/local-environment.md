@@ -72,6 +72,13 @@ cd api && bundle install && bin/rails s
 `api/db/Schemafile` を変更したときは `bundle exec rake ridgepole:apply[development]` /
 `[test]` の両方を流し、`property_dev` と `property_test` の両方に反映すること。
 
+## api/ のテスト
+
+```bash
+cd api
+bundle exec rspec   # LocalStack が起動していなくても通る(Cdc をスタブ化しているため)
+```
+
 ## 環境固有の注意点
 
 - Linux では OpenSearch 起動前に `sudo sysctl -w vm.max_map_count=262144` が必要

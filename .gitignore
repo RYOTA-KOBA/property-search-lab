@@ -12,3 +12,6 @@ api/tmp/
 api/storage/
 api/config/master.key
 api/.byebug_history
+
+# RSpec の実行結果永続化ファイル(--only-failures 用。ローカルの実行履歴でしかない)
+api/spec/examples.txt

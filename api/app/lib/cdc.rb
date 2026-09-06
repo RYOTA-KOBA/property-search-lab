@@ -12,7 +12,9 @@ module Cdc
       endpoint: ENV.fetch("LOCALSTACK_ENDPOINT", "http://localhost:4566"),
       region: ENV.fetch("AWS_DEFAULT_REGION", "ap-northeast-1"),
       access_key_id: ENV.fetch("AWS_ACCESS_KEY_ID", "test"),
-      secret_access_key: ENV.fetch("AWS_SECRET_ACCESS_KEY", "test")
+      secret_access_key: ENV.fetch("AWS_SECRET_ACCESS_KEY", "test"),
+      # test 環境では LocalStack に依存させず、AWS SDK 組み込みのスタブで完結させる
+      stub_responses: Rails.env.test?
     ).tap { |c| ensure_stream(c) }
   end
 

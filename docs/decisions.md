@@ -260,6 +260,25 @@ DMS 形式のイベント(`data`/`metadata`)や非正規化ロジックは従来
 
 ---
 
+## D16. RSpec のテスト DB(property_test)を development(property_dev)と分離する
+
+**採用(2026-09)。**
+
+RSpec 導入にあたり、`config/database.yml` の `test` 環境が `development` と同じデータベース
+(`property_dev`)を指していた点を見直した。共用のままだとテスト実行のたびに開発用のシードデータが
+巻き込まれる/汚れるおそれがあるため、`property_test` を新設して分離した。
+
+副作用として、`app` ユーザーは MySQL コンテナ起動時に `MYSQL_DATABASE`(property_dev)にしか
+権限を持たない(公式 MySQL イメージの仕様)ため、`property_test` に対する
+`GRANT ALL PRIVILEGES` を別途行う必要があった(`mysql/init/02_test_database.sql` /
+`scripts/setup-mysql.sh`)。ローカル検証環境のみの対応であり、本番の権限設計とは無関係。
+
+また RSpec のモデル・CDC 関連のテストが LocalStack の起動を前提にしないよう、
+`api/app/lib/cdc.rb` の Kinesis クライアントに `stub_responses: Rails.env.test?` を渡し、
+test 環境では実際に put-record しない(AWS SDK 組み込みのスタブ機構を使う)ようにした。
+
+---
+
 ## D17. Ridgepole 導入時に踏んだ問題
 
 **記録(2026-09)。** D15 の導入作業中に踏んだ、次に同じ調査をしなくて済むようにするための記録。

@@ -5,8 +5,10 @@ class PropertySearch
   DEFAULT_PER_PAGE = 20
   INDEX_NAME = "properties_search".freeze
 
-  def initialize(params)
+  # client を渡すとそれを使う(テストでダブルを注入するため)。省略時は OpenSearch::Client を都度生成する
+  def initialize(params, client: nil)
     @params = params
+    @client = client
   end
 
   def call
