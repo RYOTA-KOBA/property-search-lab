@@ -5,3 +5,10 @@ vendor/bundle/
 **/lambda.zip
 .bundle/
 lambda/build/
+
+# api/ (Rails)
+api/log/
+api/tmp/
+api/storage/
+api/config/master.key
+api/.byebug_history
